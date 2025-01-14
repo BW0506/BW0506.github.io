@@ -4,15 +4,67 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+    <title>Bo Wang's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Example Student's Assignment 1!</h1>
+    <h1>Bo Wang's Assignment 1 Blink!</h1>
     <div class="header">
-      <img src="red-panda.jpg" />
       <p>Here is all the documentation for assignment 1!</p>
+    </div>
+    <div>
+      <h2>Schematic:</h2>
+      <img src="Schematic.jpg" />
+      <p>This is the schematic for my 3 LEDs connected to the Arduino, and the calculation for each resistance.</p>
+    </div>
+    <div>
+      <h2>Circuit:</h2>
+      <img src="Circuit.png" />
+      <p>Here is my circuit, as the calculation showed above we can see that the resistance for red and green LED is 160 ohms and for blue LED is 85 ohms, so I picked two 220 ohms resistors and one 100 ohms resistor. </p>
+    </div>
+    <div>
+      <h2>Firmware:</h2>
+      <pre><code>
+        int RED_LED = 11;    // create an variable name for pin 11 called RED_LED
+        int GREEN_LED = 12;  // create an variable name for pin 12 called GREEN_LED
+        int BLUE_LED = 13;   // create an variable name for pin 13 called BLUE_LED
+        
+        void setup() {
+          pinMode(RED_LED, OUTPUT);    // initialize digital pin RED_LED as an output.
+          pinMode(GREEN_LED, OUTPUT);  // initialize digital pin GREEN_LED as an output.
+          pinMode(BLUE_LED, OUTPUT);   // initialize digital pin BLUE_LED as an output.
+        }
+        
+        void loop() {
+          digitalWrite(RED_LED, HIGH);    // turn the RED LED on
+          digitalWrite(GREEN_LED, LOW);   // keep the GREEN LED off by making the voltage LOW
+          digitalWrite(BLUE_LED, LOW);    // keep the BLUE LED off by making the voltage LOW
+          delay(600);                     // wait for 0.6 second
+          digitalWrite(RED_LED, LOW);     // turn the RED LED off by making the voltage LOW
+          digitalWrite(GREEN_LED, HIGH);  // turn the GREEN LED on
+          digitalWrite(BLUE_LED, LOW);    // keep the BLUE LED off by making the voltage LOW
+          delay(600);                     // wait for 0.6 second
+          digitalWrite(RED_LED, LOW);     // keep the RED LED off by making the voltage LOW
+          digitalWrite(GREEN_LED, LOW);   // turn the GREEN LED off by making the voltage LOW
+          digitalWrite(BLUE_LED, HIGH);   // turn the BLUE LED on
+          delay(600);                     // wait for 0.6 second
+        }
+      </code></pre>
+    </div>
+    <div>
+      <h2>Blink!</h2>
+      <img src="Blink.gif" />
+      <p>This is my final result, with each LED flashing for 0.6 seconds.</p>
+    </div>
+    <div>
+      <h2>Questions:</h2>
+      <p>Draw a graph where the X axis is time and the Y axis is voltage across the LEDs. Draw a line for each of your 3 LEDs.</p>
+      <img src="Graph.jpg" />
+      <p>How many LEDs could you blink independently with your Arduino? How much current would that draw?</p>
+      <p>I think I could blink 13 LEDs independently since my Arduino has 13 digital pins. I think that would draw 260 mA current. </p>
+      <p>How fast do you need to blink your LEDs until you no longer can tell that they are blinking?</p>
+      <p>It is around 0.005-0.006 seconds.</p>
     </div>
   </body>
 </html>
