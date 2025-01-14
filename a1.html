@@ -36,25 +36,26 @@
           pinMode(BLUE_LED, OUTPUT);   // initialize digital pin BLUE_LED as an output.
         }
         
+        // the loop function runs over and over again forever
         void loop() {
           digitalWrite(RED_LED, HIGH);    // turn the RED LED on
-          digitalWrite(GREEN_LED, LOW);   // keep the GREEN LED off by making the voltage LOW
-          digitalWrite(BLUE_LED, LOW);    // keep the BLUE LED off by making the voltage LOW
-          delay(600);                     // wait for 0.6 second
+          delay(600);                     // wait for 0.6 seconds
           digitalWrite(RED_LED, LOW);     // turn the RED LED off by making the voltage LOW
+          delay(600);                     // wait for 0.6 seconds
           digitalWrite(GREEN_LED, HIGH);  // turn the GREEN LED on
-          digitalWrite(BLUE_LED, LOW);    // keep the BLUE LED off by making the voltage LOW
-          delay(600);                     // wait for 0.6 second
-          digitalWrite(RED_LED, LOW);     // keep the RED LED off by making the voltage LOW
+          delay(600);                     // wait for 0.6 seconds
           digitalWrite(GREEN_LED, LOW);   // turn the GREEN LED off by making the voltage LOW
+          delay(600);                     // wait for 0.6 seconds
           digitalWrite(BLUE_LED, HIGH);   // turn the BLUE LED on
-          delay(600);                     // wait for 0.6 second
+          delay(600);                     // wait for 0.6 seconds
+          digitalWrite(BLUE_LED, LOW);    // turn the BLUE LED off by making the voltage LOW
+          delay(600);                     // wait for 0.6 seconds
         }
       </code></pre>
     </div>
     <div>
       <h2>Blink!</h2>
-      <img src="Blink.gif" />
+      <img src="Blink!.gif" />
       <p>This is my final result, with each LED flashing for 0.6 seconds.</p>
     </div>
     <div>
@@ -64,7 +65,7 @@
       <p>How many LEDs could you blink independently with your Arduino? How much current would that draw?</p>
       <p>I think I could blink 13 LEDs independently since my Arduino has 13 digital pins. I think that would draw 260 mA current. </p>
       <p>How fast do you need to blink your LEDs until you no longer can tell that they are blinking?</p>
-      <p>It is around 0.005-0.006 seconds.</p>
+      <p>It is around 0.003-0.004 seconds.</p>
     </div>
   </body>
 </html>
