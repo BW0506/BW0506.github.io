@@ -11,7 +11,7 @@
   <body>
     <h1>Bo Wang's Assignment 3 Input Output!</h1>
     <div class="header">
-      <p>Here is all the documentation for assignment 2!</p>
+      <p>Here is all the documentation for assignment 3!</p>
     </div>
     <div>
       <h2>Schematic:</h2>
@@ -38,7 +38,9 @@
         
         void loop() {
           int SENSORval = analogRead(SENSOR);             // read the state of the sensor value
-            SENSORval = map(SENSORval, 300, 900, 0, 255); // map the sensor value with LED brightness
+          // set the value range according to the serial monitor, 
+          // map the sensor value with LED brightness.
+          SENSORval = map(SENSORval, 300, 900, 0, 255); 
           if (SENSORval > 0) {                            // Set the condition as the sensor value changes,
             analogWrite(RED_LED, SENSORval);              // the brightness of the LED also changes
             analogWrite(BLUE_LED, SENSORval);
@@ -58,10 +60,12 @@
     <div>
       <h2>Questions:</h2>
       <p>In your voltage divider, can the variable resistor be either R1 or R2 or does it need to be one or the other? Justify your answer with example calculations.</p>
-      
+      <img src="Graph4.jpg" />
+      <p>I think the variable resistor can be either R1 or R2, but the output voltage is different.</p>
       <p>Draw a graph where the x-axis is time and the y-axis is voltage. Plot the voltage at V-measure of your voltage divider of your shared gif.</p>
       <img src="Graph3.jpg" />
       <p>AnalogWrite and analogRead are respectively 8-bit and 10-bit values. Imagine you had 10-bit PWM and a 16-bit analog-to-digital converter instead. How would this change your map() code? Explain your answer.</p>
+      <p>I think the value that takes into the map() code should be different. If the analogWrite converted to 10-bit PWM, the range is 0-1024. If the analogWrite converted to 16-bit PWM, the range is 0-65536.</p>
     </div>
   </body>
 </html>
