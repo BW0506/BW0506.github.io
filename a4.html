@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Bo Wang's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Bo Wang's Assignment 4 Libraries!</h1>
+    <div class="header">
+      <p>Here is all the documentation for assignment 4!</p>
+    </div>
+    <div>
+      <h2>Schematic:</h2>
+      <img src="Schematic4.jpg" />
+      <p>This is the schematic for capacitive touch sensor, and I used 1 megaohm resistor for absolute touch to activate. And a schematic for my servo that connected to the arduino.
+      </p>
+    </div>
+    <div>
+      <h2>Circuit:</h2>
+      <img src="Circuit4.png" />
+      <p>Here is my circuit, I connected the servo with pin 3 and I set Pin 4 as sendPin and Pin 2 as receivePin for my capacitive touch sensor.</p>
+    </div>
+    <div>
+      <h2>Firmware:</h2>
+      <pre><code>
+          #include <Servo.h>
+          #include <CapacitiveSensor.h>
+          
+          Servo myServo;       // create a servo object called myServo
+          CapacitiveSensor  cs_4_2 = CapacitiveSensor(4,2);  // set Pin 4 as sendPin and Pin 2 as receivePin
+          
+          void setup() {
+            myServo.attach(3); // attaches the servo on pin 3 to myServo
+            cs_4_2.set_CS_AutocaL_Millis(0xFFFFFFFF); // turn off autocalibrate
+            Serial.begin(9600); // start serial communication and set the rate at 9600
+          }
+          
+          void loop() {
+            long start = millis();
+            long sensorValue  = cs_4_2.capacitiveSensor(30); // Retrieve the sensor value with 30 samples
+          
+            Serial.print(millis() - start); // print the execution time in milliseconds
+            Serial.print("\t"); // tab
+          
+            Serial.println(sensorValue); // print the sensor value
+            delay(10); // delay for 10 ms to limit data that print out to serial port
+            
+            // if the sensor value is greater than 300(through observation of serial monitor),
+            // turn the servo to 180 degree, else, turn the servo to 0 degree
+            if (sensorValue > 300) {
+              myServo.write(180);
+            } else {
+              myServo.write(0);
+            }
+          }
+      </code></pre>
+      <p>Note: Some part of code used the example code from class.
+        https://playground.arduino.cc/Main/CapacitiveSensor/index-2.html
+      </p>
+    </div>
+    <div>
+      <h2>Libraries!</h2>
+      <img src="Libraries!.gif" />
+      <p>This is my final result, when I touch the mental chopstick, the servo will turn to 180 degree, and then it will back to 0 degree.</p>
+    </div>
+    <div>
+      <h2>Questions:</h2>
+      <p>Question 1:</p>
+      <img src="Graph5.jpg">
+      <p>Question 2: Your input device is slightly broken, leading it to give us an erroneous reading 1% of the time. How can we address this? Answer in (pseudo)code.</p>
+      <pre><code>
+        // if the sensor value is 2.5 times greater then previous value we can adjust it. Or we can set different conditions to deal with different circumstances
+        if (inputValue > 2.5 * prevInputValue) {
+          inputValue = prevInputValue;
+        }
+      </code></pre>
+      <p>Question 3: Your input device is slightly noisy, leading the measurement to randomly deviate from the true measurement up or down by 10%. How can we address this? Answer in (pseudo)code.</p>
+      <pre><code>
+        // we can take the average value of past values
+        inputValue = sumOfPastTenValue / 10
+      </code></pre>
+    </div>
+  </body>
+</html>
+
