@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Bo Wang's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Bo Wang's Assignment 6 Talking to the web!</h1>
+    <div class="header">
+      <p>Here is all the documentation for assignment 6!</p>
+    </div>
+    <div>
+      <h2>Schematic:</h2>
+      <img src="Schematic6.jpg" />
+      <p>I want to use a joy stick and photoresistor to interact with the web and the RGB LED as well. This is the schematic for a RGB LED, a photoresistor and a joy stick. And all calculations with corresponding resistor values.
+      </p>
+    </div>
+    <div>
+      <h2>Circuit:</h2>
+      <img src="Circuit6.png" />
+      <p>Here is my circuit, I connected the R to the pin 3, G to the pin 5, and B to the pin 6. The photoresistor is connected to the A2. The x value and the y value of the joy stick are connected to the A1 and A0. So this way I can use arduino to receive the sensor value from the joy stick and photoresistor and control the color of the RGB LED. After the value is received, I can use the web to read all the serial values from Arduino.</p>
+    </div>
+    <div>
+      <h2>Firmware: P5.js Code</h2>
+      <pre><code>
+        const BAUD_RATE = 9600; // Matching the baud rate to my arduino
+        let port, connectBtn; // Assign global variables
+        
+        function setup() {
+          setupSerial(); // Running the serial setup function
+          createCanvas(600, 500); // Creating canvas
+        }
+        
+        function draw() {
+          const portIsOpen = checkPort(); // Check whether the port is open or not
+          if (!portIsOpen) return; // If the port is not open, exit the draw loop
+          
+          let str = port.readUntil("\n"); // Read the serial data from the port
+          if (str.length == 0) return; // If it didn't read any data, then return.
+          
+          let rgbArray = str.trim().split(","); // Trim whitespace and split on commas
+        
+          
+          // Define each color with received data array, and since I mapped the data in my Arduino
+          // no more mapping is needed
+          const red = rgbArray[0];
+          const green = rgbArray[1];
+          const blue = rgbArray[2];
+        
+          clear(); // Clear the canvas
+          background(0); // Set the background color to black
+        
+          // Creating circle shapes with corresponding color
+          fill(red,0,0);
+          circle(150,350,100);
+          fill(0,green,0);
+          circle(300,80,100);
+          fill(0,0,blue);
+          circle(450,350,100);
+          fill(red,green,blue);
+          circle(300, 250, 180);
+        }
+        
+        // If "o" is pressed, send value 0 to Arduino
+        function keyPressed() {
+          if (key === "o") {
+            port.write(0);
+          }
+        }
+        
+        // Three helper functions for managing the serial connection.
+        
+        function setupSerial() {
+          port = createSerial();
+          
+          // Check to see if there are any ports used previously
+          let usedPorts = usedSerialPorts();
+          if (usedPorts.length > 0) {
+            // Open the first port if there are ports we've used
+            port.open(usedPorts[0], BAUD_RATE);
+          }
+          
+          // Create a connect button to connect Arduino
+          connectBtn = createButton("Connect to Arduino");
+          connectBtn.position(5, 5); // Position the button
+          connectBtn.mouseClicked(onConnectButtonClicked); // After button is cliked run the onConnectButtonClicked function
+        }
+        
+        // Check whether the port is open
+        function checkPort() {
+          if (!port.opened()) {
+            // If the port is not open
+            connectBtn.html("Connect to Arduino");
+            // Set background to gray
+            background("gray");
+            return false;
+          } else {
+             // If the port is open, change button text
+            connectBtn.html("Disconnect");
+            return true;
+          }
+        }
+          
+        function onConnectButtonClicked() {
+          // After connect button is clicked
+          if (!port.opened()) {
+            // If the port is not opened, open it
+            port.open(BAUD_RATE);
+          } else {
+            // Close it
+            port.close();
+          }
+        }
+      </code></pre>
+      <h2>Firmware: Arduino Code</h2>
+      <pre><code>
+        void setup() {
+          // set pin modes as outputs
+          pinMode(3, OUTPUT);
+          pinMode(5, OUTPUT);
+          pinMode(6, OUTPUT);
+          // sets the data rate in 9600 bits per second
+          Serial.begin(9600);
+        }
+        
+        void loop() {
+          if (Serial.available() > 0) {// if there's serial data from web
+            int inByte = Serial.read(); // read the data
+            Serial.write(inByte);  	// write it as raw binary data
+            analogWrite(3, inByte);	// use the data to set the LED brightness to 0
+            analogWrite(5, inByte);	// use the data to set the LED brightness to 0
+            analogWrite(6, inByte);	// use the data to set the LED brightness to 0
+            delay(5000); // 0 brightness for 5 seconds
+          } else {
+            int redValue = analogRead(A2);
+            // map the serial value with brightness of red color
+            redValue = map(redValue, 150, 620, 0, 255);
+            // print the serial output
+            Serial.print(redValue);
+            Serial.print(",");
+            int greenValue = analogRead(A1);
+            // map the serial value with brightness of green color
+            greenValue = map(greenValue, 0, 1023, 0, 255);
+            // print the serial output
+            Serial.print(greenValue);
+            Serial.print(",");
+            int blueValue = analogRead(A0);
+            // map the serial value with brightness of blue color
+            blueValue = map(blueValue, 0 , 1023, 0, 255);
+            // print the serial output
+            Serial.println(blueValue);
+            delay(50);
+        
+            // Lighting the RGB LED with corresponded value
+            analogWrite(3, redValue);
+            analogWrite(5, greenValue);
+            analogWrite(6, blueValue);
+          }
+        }
+      </code></pre>
+      
+      <p>Note: Some part of code are used from the example code from class material.
+        https://github.com/machineagency/hcde439/
+      </p>
+    </div>
+    <div>
+      <h2>Talking to the web!</h2>
+      <img src="sensors.gif" />
+      <p>This is my final result, I can use the joy stick and the photoresistor to change the colors of the RGB LED and also the color of circles on the web.</p>
+      <h2>The web talks back!</h2>
+      <img src="key.gif" />
+      <p>When I press the key "o", the web will send a data to the arduino and read it as value 0 to turn the RGB LED off for 5 seconds.</p>
+    </div>
+  </body>
+</html>
+
