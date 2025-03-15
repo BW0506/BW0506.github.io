@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Bo Wang's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Bo Wang's Assignment Final Project "Beep Beep"!</h1>
+    <div class="header">
+      <p>Here is all the documentation for my final project!</p>
+    </div>
+    <div>
+      <h2>Concept</h2>
+      <p>It is always fun to make a smart toy for yourself! This is a car that can avoid obstacles. This car can sense the distance of obstacles through two ultrasonic sensors and make corresponding adjustments.</p>
+    </div>
+    <div>
+      <h2>Key Materials</h2>
+      <p>Since this system requires a lot of current!</p>
+      <p>&bull; 9V (6*AA) battery</p>
+      <p>&bull; L298N motor driver(max current output: 2A)</p>
+      <p>&bull; 2 TT motors(Greater Torque)</p>
+      <p>&bull; 2 Ultrasonic sensors</p>
+      <p>&bull; Arduino</p>
+      <p>&bull; breadboard</p>
+    </div>
+    <div>
+      <h2>Schematic:</h2>
+      <img src="Schematic Final.jpg" />
+      <p>Here is my schematic for Beep Beep, I used a 6*AA battery pack, L298N motor driver, 2 ultralsonic sensors, 2 TT motors and an Arduino. The whole system is powered by a 9V battery pack and the 5V output of the L298N supplies power to the Arduino and other hardwares.
+      </p>
+    </div>
+    <div>
+      <h2>Circuit:</h2>
+      <img src="Circuit Final.png" />
+      <p>Here is my circuit for Beep Beep, I connected two motors to the L298N motor driver and the two ultrasonic sensors and motor driver are connected to the Arduino's corresponding pins. A breadboard is used for 5V and GND connections.</p>
+    </div>
+    <div>
+      <h2>Firmware</h2>
+      <pre><code>
+        int motorAspeed = 11; // Assign pin 11 to motorAspeed
+        int motorA1 = 12;     // Assign pin 12 to motorA1
+        int motorA2 = 13;     // Assign pin 13 to motorA2
+        int motorBspeed = 10; // Assign pin 10 to motorBspeed
+        int motorB1 = 8;      // Assign pin 8 to motorB1
+        int motorB2 = 7;      // Assign pin 7 to motorB2
+        int frontEcho = 6;    // Assign pin 6 to frontEcho
+        int frontTrig = 5;    // Assign pin 5 to frontTrig
+        int rightEcho = A5;   // Assign A5 to rightEcho
+        int rightTrig = A4;   // Assign A4 to rightTrig
+        
+        // Declare floats for ultrasonic sensors
+        float frontDuration, frontDistance, rightDuration, rightDistance;
+        
+        void setup() {
+          pinMode(motorAspeed, OUTPUT); // Set motorAspeed as output
+          pinMode(motorBspeed, OUTPUT); // Set motorBspeed as output 
+          pinMode(motorA1, OUTPUT);     // Set motorA1 as output 
+          pinMode(motorA2, OUTPUT);     // Set motorA2 as output 
+          pinMode(motorB1, OUTPUT);     // Set motorB1 as output 
+          pinMode(motorB2, OUTPUT);     // Set motorB2 as output 
+          pinMode(frontEcho, INPUT);    // Set frontEcho as input 
+          pinMode(frontTrig, OUTPUT);   // Set frontTrig as output 
+          pinMode(rightEcho, INPUT);    // Set rightEcho as input
+          pinMode(rightTrig, OUTPUT);   // Set rightTrig as output 
+          // Start serial communications
+          Serial.begin(9600);
+        }
+        
+        void loop() {
+          // Set motor speed by controlling PWM wave
+          analogWrite(motorAspeed, 150);
+          analogWrite(motorBspeed, 150);
+          // To make sure the frontTrig is low at first, set frontTrig to low for 2 ms
+          digitalWrite(frontTrig, LOW);
+          delay(2);
+          // Set frontTrig to high for 10ms which sends out 8 cycles sonic burst
+          // then bounces back to the receiver
+          digitalWrite(frontTrig, HIGH);
+          delay(10);
+          digitalWrite(frontTrig, LOW);
+          // Using pulseIn to get the time that the waves were traveling for
+          frontDuration = pulseIn(frontEcho, HIGH);
+          // Using equation to calculate the distance
+          frontDistance = (frontDuration * 0.0343) / 2;
+          // Repeat the same steps above for right ultrasonic sensor
+          digitalWrite(rightTrig, LOW);
+          delay(2);
+          digitalWrite(rightTrig, HIGH);
+          delay(10);
+          digitalWrite(rightTrig, LOW);
+          rightDuration = pulseIn(rightEcho, HIGH);
+          rightDistance = (rightDuration * 0.0343) / 2;
+        
+          // Creating the movement logic for two motors by using if/else statements
+          // if the distance value received from front sensor is less than 10cm
+          // and the value received from right sensor is less than 30cm
+          if (frontDistance < 10 && rightDistance < 30) {
+            // Lower the speed
+            analogWrite(motorAspeed, 120);
+            analogWrite(motorBspeed, 120);
+            // Move backwards for 1s
+            digitalWrite(motorA1, HIGH);
+            digitalWrite(motorA2, LOW);
+            digitalWrite(motorB1, HIGH);
+            digitalWrite(motorB2, LOW);
+            delay(1000);
+            // Turn left for 2s by controlling two motors independently
+            digitalWrite(motorA1, HIGH);
+            digitalWrite(motorA2, LOW);
+            digitalWrite(motorB1, LOW);
+            digitalWrite(motorB2, HIGH);
+            delay(2000);
+          // if the distance value received from front sensor is less than 10cm
+          } else if (frontDistance < 10) {
+            // Lower the speed
+            analogWrite(motorAspeed, 120);
+            analogWrite(motorBspeed, 120);
+            // Move backwards for 1s
+            digitalWrite(motorA1, HIGH);
+            digitalWrite(motorA2, LOW);
+            digitalWrite(motorB1, HIGH);
+            digitalWrite(motorB2, LOW);
+            delay(1000);
+            // Turn right for 2s
+            digitalWrite(motorA1, LOW);
+            digitalWrite(motorA2, HIGH);
+            digitalWrite(motorB1, HIGH);
+            digitalWrite(motorB2, LOW);
+            delay(2000);
+          } else {
+            // Else move forward(no close obstacles detected)
+            digitalWrite(motorA1, LOW);
+            digitalWrite(motorA2, HIGH);
+            digitalWrite(motorB1, LOW);
+            digitalWrite(motorB2, HIGH);
+          }
+        }
+      </code></pre>
+      <p>Note: Some part of code are used from the example code from class material and online tutorial.
+        <a href="https://projecthub.arduino.cc/Isaac100/getting-started-with-the-hc-sr04-ultrasonic-sensor-7cabe1">https://projecthub.arduino.cc/Isaac100/getting-started-with-the-hc-sr04-ultrasonic-sensor-7cabe1</a>
+      </p>
+    </div>
+    <div>
+      <h2>Demo Videos</h2>
+      <p>I created an exterior and a base for Beep Beep by using cardboard and tapes.</p>
+      <iframe wideth="640" height="360" src="https://youtu.be/3rDFUkO6ZiQ" frameborder="0" allowfullscreen></iframe>     
+      <iframe wideth="640" height="360" src="https://youtu.be/B9KBpbPloGI" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div>
+      <h2>Technical Write Up</h2>
+      <p>This system requires high currents! So it is important for us to make sure our system has enough current ouput for motors and other hardwares. So I used a 6*AA battery pack to power the L298N motor driver. The 5V output of the L298N supplies power to the Arduino and other components. The L298N motor driver controls the two TT motors, enabling forward and backward movement. The car has two TT motors positioned at the back, which enable turning by adjusting their movement independently. Also, two ultrasonic sensors are connected to the Arduino. These sensors detect obstacles by measuring distance, and the car adjusts its direction accordingly. To make Beep Beep turn right, I set the left wheel move forward and the right wheel move backward. To make it turn left, I set the left wheel move backward and right wheel move forward. There are a lot of thing to play around with Beep Beep. For example, we could add a voice reponse for Beep Beep by using DFPlayer. DFPlayer requires a TF card with mp3 files and a speaker as well. In this way, we can make Beep Beep to say anything we want. Further more, we can develop Beep Beep to a smart robot cleaner by using an extra servo motor and corresponding mechanic structures, this way allows Beep Beep to make a pick up movement. I will try to make these improvements in future!</p>
+    </div>
+  </body>
+</html>
+
